@@ -16,10 +16,10 @@ if __name__ == "__main__":
 	excel_data_df = pandas.read_excel('wine3.xlsx', sheet_name='Лист1', usecols=['Картинка', 'Категория', 'Название', 'Сорт', 'Цена', 'Акция']).to_dict(orient='records')
 	wines = collections.defaultdict(list)
 
-	for entry in excel_data_df:
-		wines[entry['Категория']].append(entry)
+	for drink in excel_data_df:
+		wines[drink['Категория']].append(drink)
 	
-	wines = collections.OrderedDict(sorted(wines.items(), key=lambda t: t[0]))
+	wines = collections.OrderedDict(sorted(wines.items(), key=lambda t: t[0])) # Отсортировать словарь в алфавитном порядке по ключу 'Категория'
 		
 	rendered_page = template.render(wines=wines)
 
