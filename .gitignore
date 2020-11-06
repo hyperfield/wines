@@ -11,6 +11,9 @@ __pycache__/
 # Temporary files
 *~
 
+# Repl.it files
+.replit
+
 # C extensions
 *.so
 
