@@ -10,12 +10,12 @@ if __name__ == "__main__":
     	autoescape=select_autoescape(['html', 'xml'])
 	)
 	template = env.get_template('template.html')
-	excel_data_df = pandas.read_excel('wine3.xlsx', sheet_name='Лист1',
+	excel_dataframe = pandas.read_excel('wine3.xlsx', sheet_name='Лист1',
 									usecols=['Картинка', 'Категория', 'Название',
 									'Сорт', 'Цена', 'Акция']).to_dict(orient='records')
 	wines = collections.defaultdict(list)
 
-	for drink in excel_data_df:
+	for drink in excel_dataframe:
 		wines[drink['Категория']].append(drink)
 
 	wines = collections.OrderedDict(sorted(wines.items(),\
