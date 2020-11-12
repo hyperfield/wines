@@ -35,7 +35,6 @@ if __name__ == "__main__":
     for drink in excel_dataframe:
         wines[drink['Категория']].append(drink)
 
-    # Отсортировать словарь в алфавитном порядке по ключу 'Категория'
     wines = collections.OrderedDict(sorted(wines.items(),
                                            key=lambda t: t[0]))
     rendered_page = template.render(wines=wines, age=datetime.datetime.now()
