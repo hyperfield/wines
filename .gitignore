@@ -13,6 +13,9 @@ __pycache__/
 .~
 *#
 
+# Dynamically generated files
+index.html
+
 # Repl.it files
 .replit
 poetry.lock
