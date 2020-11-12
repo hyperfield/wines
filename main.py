@@ -9,38 +9,40 @@ import collections
 import sys
 import argparse
 
-def createParser ():
+BEGIN_YEAR = 1920
+
+
+def createParser():
     parser = argparse.ArgumentParser()
-    parser.add_argument ('path', nargs='?', default='wine3.xlsx')
-     
+    parser.add_argument('path', nargs='?', default='wine_list.xlsx')
+
     return parser
 
+
 if __name__ == "__main__":
-	parser = createParser()
-	namespace = parser.parse_args (sys.argv[1:])
-	env = Environment(
-	loader=FileSystemLoader('.'),
-    	autoescape=select_autoescape(['html', 'xml'])
-	)
-	template = env.get_template('template.html')
-	excel_dataframe = pandas.read_excel(namespace.path, sheet_name='Лист1',
-									usecols=['Картинка', 'Категория', 'Название',
-									'Сорт', 'Цена', 'Акция']).to_dict(orient='records')
-	wines = collections.defaultdict(list)
+    parser = createParser()
+    namespace = parser.parse_args(sys.argv[1:])
+    env = Environment(loader=FileSystemLoader('.'), autoescape=select_autoescape(['html', 'xml']))
+    template = env.get_template('template.html')
+    excel_dataframe = pandas.read_excel(namespace.path, sheet_name='Лист1',
+                                        usecols=['Картинка', 'Категория',
+                                                 'Название', 'Сорт', 'Цена',
+                                                 'Акция'],
+                                        keep_default_na=False)\
+                            .to_dict(orient='records')
+    wines = collections.defaultdict(list)
 
-	for drink in excel_dataframe:
-		wines[drink['Категория']].append(drink)
+    for drink in excel_dataframe:
+        wines[drink['Категория']].append(drink)
 
-	wines = collections.OrderedDict(sorted(wines.items(),\
-		 							key=lambda t: t[0])) # Отсортировать словарь в алфавитном порядке по ключу 'Категория'
-		 							
-	
-	rendered_page = template.render(
-			wines=wines,
-			age=datetime.datetime.now().year-1920)
+    # Отсортировать словарь в алфавитном порядке по ключу 'Категория'
+    wines = collections.OrderedDict(sorted(wines.items(),
+                                           key=lambda t: t[0]))
+    rendered_page = template.render(wines=wines, age=datetime.datetime.now()
+                                                             .year-BEGIN_YEAR)
 
-	with open('index.html', 'w', encoding="utf8") as file:
-		file.write(rendered_page)
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
 
-	server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-	server.serve_forever()
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
